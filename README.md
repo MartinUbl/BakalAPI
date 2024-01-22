@@ -1,6 +1,6 @@
 # BakalAPI
 
-BakalAPI je minimalistické API pro čtení údajů ze školního systému Bakaláři skrze jeho [API (v3)](https://github.com/bakalari-api/bakalari-api-v3). Knihovna je ve fázi vývoje, je tedy možné, že se objeví chyby nebo nestandardní chování. V případě, že chybu objevíte, můžete ji nahlásit zde v issue trackeru.
+BakalAPI je minimalistická PHP knihovna pro konzumaci API pro čtení údajů ze školního systému Bakaláři skrze jeho [API (v3)](https://github.com/bakalari-api/bakalari-api-v3). Knihovna je ve fázi vývoje, je tedy možné, že se objeví chyby nebo nestandardní chování. V případě, že chybu objevíte, můžete ji nahlásit zde v issue trackeru.
 
 Pokud byste chtěli do vývoje přispět, nebojte se repozitář forknout, upravit a otevřít pull request. Jakékoliv příspěvky jsou vítány.
 
