@@ -1,5 +1,7 @@
 <?php
 
+namespace Martinubl\Bakalapi;
+
 class Baka_LoginError {
     const OK = 0;
     const INVALID = 1;

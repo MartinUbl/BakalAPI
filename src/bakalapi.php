@@ -1,5 +1,7 @@
 <?php
 
+namespace Martinubl\Bakalapi;
+
 require "baka_errors.php";
 
 class BakalAPI {
