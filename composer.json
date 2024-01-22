@@ -1,0 +1,20 @@
+{
+    "name": "martinubl/bakalapi",
+    "description": "A read-only API for Bakalari (v3)",
+    "type": "library",
+    "require": {
+        "guzzlehttp/guzzle": "7.8"
+    },
+    "license": "proprietary",
+    "autoload": {
+        "psr-4": {
+            "Martinubl\\Bakalapi\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Martin Ubl"
+        }
+    ],
+    "minimum-stability": "dev"
+}
