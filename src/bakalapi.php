@@ -6,7 +6,7 @@ require "baka_errors.php";
 
 class BakalAPI {
 
-    /** @var GuzzleHttp\Client */
+    /** @var \GuzzleHttp\Client */
     private $client = null;
 
     /** @var string */
@@ -25,7 +25,7 @@ class BakalAPI {
     private $storedInSession = false;
 
     public function __construct($url, $urlSuffix = "") {
-        $this->client = new GuzzleHttp\Client([
+        $this->client = new \GuzzleHttp\Client([
             'base_uri' => $url,
             'timeout'  => 2.0,
         ]);
