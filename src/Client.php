@@ -2,9 +2,7 @@
 
 namespace Martinubl\Bakalapi;
 
-require "baka_errors.php";
-
-class BakalAPI {
+class Client {
 
     /** @var \GuzzleHttp\Client */
     private $client = null;
@@ -161,19 +159,15 @@ class BakalAPI {
 
         $data = json_decode((string) $response->getBody());
 
-        foreach ($data as $key => $value) {
-            echo $key.' => '.json_encode($value).' <br/>';
-        }
-
         $this->userInfo = new Baka_UserInfo();
         
-        $this->userInfo->uid = $data['UserUID'];
-        $this->userInfo->fullName = $data['FullName'];
+        $this->userInfo->uid = $data->UserUID;
+        $this->userInfo->fullName = $data->FullName;
         
-        if ($data['UserType'] == "teacher")
+        if ($data->UserType == "teacher")
             $this->userInfo->role = Baka_UserType::TEACHER;
 
-        $this->userInfo->studyClass = $data["Class"];
+        $this->userInfo->studyClass = $data->Class;
 
         return $this->userInfo;
     }

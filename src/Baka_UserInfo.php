@@ -2,10 +2,7 @@
 
 namespace Martinubl\Bakalapi;
 
-class Baka_UserType {
-    const STUDENT = 0;
-    const TEACHER = 1;
-};
+use Martinubl\Bakalapi\Baka_UserType;
 
 class Baka_UserInfo {
 

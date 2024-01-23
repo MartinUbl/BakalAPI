@@ -7,6 +7,3 @@ class Baka_LoginError {
     const INVALID = 1;
     const SERVER_ERROR = 2;
 };
-
-class Baka_SessionExpiredException extends \Exception {
-};
