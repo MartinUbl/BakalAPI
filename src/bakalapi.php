@@ -44,7 +44,8 @@ class BakalAPI {
                 'grant_type' => 'password',
                 'username' => $username,
                 'password' => $password
-            ]
+            ],
+            'http_errors' => false
         ]);
 
         if ($response->getStatusCode() != 200) {
