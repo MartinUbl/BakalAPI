@@ -12,6 +12,9 @@ class BakalAPI {
     /** @var string */
     private $accessToken = "";
 
+    /** @var int */
+    private $accessTokenExpiresAt = 0;
+
     /** @var string */
     private $urlSuffix = "";
     
@@ -58,17 +61,19 @@ class BakalAPI {
         }
 
         $this->accessToken = $parsed['access_token'];
+        $this->accessTokenExpiresAt = time() + $parsed['expires_in'];
         $this->unauthorized = false;
 
         return Baka_LoginError::OK;
     }
 
     public function hasToken() {
-        return !empty($this->accessToken);
+        return !empty($this->accessToken) && $this->accessTokenExpiresAt > time();
     }
 
-    public function useToken(string $accessToken) {
+    public function useToken(string $accessToken, int $expiresIn) {
         $this->accessToken = $accessToken;
+        $this->accessTokenExpiresAt = time() + $expiresIn;
     }
 
     public function getToken() : string {
@@ -85,6 +90,7 @@ class BakalAPI {
         $this->startSessionIfNeeded();
 
         $_SESSION['BakalAPI_access_token'] = $this->accessToken;
+        $_SESSION['BakalAPI_access_token_expiry'] = $this->accessTokenExpiresAt;
         $this->storedInSession = true;
         return true;
     }
@@ -96,7 +102,12 @@ class BakalAPI {
             return false;
         }
 
+        if (!isset($_SESSION['BakalAPI_access_token_expiry']) || empty($_SESSION['BakalAPI_access_token_expiry']) || $_SESSION['BakalAPI_access_token_expiry'] < time()) {
+            return false;
+        }
+
         $this->accessToken = $_SESSION['BakalAPI_access_token'];
+        $this->accessTokenExpiresAt = $_SESSION['BakalAPI_access_token_expiry'];
         $this->unauthorized = false;
         $this->storedInSession = true;
         return true;
