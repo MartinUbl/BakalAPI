@@ -66,6 +66,14 @@ class Client {
         return Baka_LoginError::OK;
     }
 
+    public function logout() {
+        $this->accessToken = null;
+        $this->accessTokenExpiresAt = 0;
+        $this->unauthorized = true;
+
+        $this->saveToSession();
+    }
+
     public function hasToken() {
         return !empty($this->accessToken) && $this->accessTokenExpiresAt > time();
     }
@@ -73,10 +81,15 @@ class Client {
     public function useToken(string $accessToken, int $expiresIn) {
         $this->accessToken = $accessToken;
         $this->accessTokenExpiresAt = time() + $expiresIn;
+        $this->unauthorized = false;
     }
 
     public function getToken() : string {
         return $this->accessToken;
+    }
+
+    public function getTokenExpiry() : int {
+        return $this->accessTokenExpiresAt;
     }
 
     protected function startSessionIfNeeded() {
@@ -90,19 +103,32 @@ class Client {
 
         $_SESSION['BakalAPI_access_token'] = $this->accessToken;
         $_SESSION['BakalAPI_access_token_expiry'] = $this->accessTokenExpiresAt;
+        $_SESSION['BakalAPI_user_info'] = $this->userInfo ? $this->userInfo->stringify() : null;
         $this->storedInSession = true;
         return true;
     }
 
-    public function restoreFromSession() : bool {
+    public function restoreFromSession($forceExpired = false) : bool {
         $this->startSessionIfNeeded();
 
         if (!isset($_SESSION['BakalAPI_access_token']) || empty($_SESSION['BakalAPI_access_token'])) {
             return false;
         }
 
-        if (!isset($_SESSION['BakalAPI_access_token_expiry']) || empty($_SESSION['BakalAPI_access_token_expiry']) || $_SESSION['BakalAPI_access_token_expiry'] < time()) {
-            return false;
+        if (!isset($_SESSION['BakalAPI_access_token_expiry']) || empty($_SESSION['BakalAPI_access_token_expiry'])) {
+            if (!$forceExpired && $_SESSION['BakalAPI_access_token_expiry'] < time()) {
+                return false;
+            }
+        }
+
+        if (isset($_SESSION['BakalAPI_user_info']) && !empty($_SESSION['BakalAPI_user_info'])) {
+            try {
+                $this->userInfo = new Baka_UserInfo();
+                $this->userInfo->destringify($_SESSION['BakalAPI_user_info']);
+            }
+            catch (Exception) {
+                $this->userInfo = null;
+            }
         }
 
         $this->accessToken = $_SESSION['BakalAPI_access_token'];
@@ -167,8 +193,22 @@ class Client {
         if ($data->UserType == "teacher")
             $this->userInfo->role = Baka_UserType::TEACHER;
 
-        $this->userInfo->studyClass = $data->Class;
+        $this->userInfo->classId = $data->Class ? $data->Class->Id : null;
+        $this->userInfo->className = $data->Class ? $data->Class->Name : null;
+        if ($data->Class && empty($data->class->Name)) {
+            $this->userInfo->className = $data->Class->Abbrev;
+        }
 
         return $this->userInfo;
+    }
+
+    public function useCached($token, $tokenExpiry, $userInfo) {
+        $this->accessToken = $token;
+        $this->accessTokenExpiresAt = $tokenExpiry;
+
+        $this->userInfo = new \Martinubl\Bakalapi\Baka_UserInfo();
+        $this->userInfo->destringify($userInfo);
+
+        $this->unauthorized = false;
     }
 };
